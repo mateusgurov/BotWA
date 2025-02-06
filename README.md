@@ -1,140 +1,329 @@
 # BotWA - Sistema de Gerenciamento de Viagens via WhatsApp
 
-Sistema para gerenciamento de viagens e abastecimentos via WhatsApp, com painel administrativo web.
+Sistema para gerenciamento de viagens e abastecimentos através do WhatsApp.
 
-## 🚀 Funcionalidades
+## 📋 Requisitos do Sistema
 
-### Bot WhatsApp
-- Registro de viagens (KM e valor)
-- Registro de abastecimentos (litros e valor)
-- Cálculo automático de custo por KM
-- Consulta de status da assinatura
+- Ubuntu 20.04 LTS
+- Node.js 18.x ou superior
+- NPM
+- SQLite3
+- Git
+- Chrome/Chromium (para o WhatsApp Web)
 
-### Painel Administrativo
-- Gerenciamento de clientes
-- Controle de assinaturas
-- Visualização de métricas e relatórios
-- Histórico completo de viagens e abastecimentos
+## 🚀 Instalação em VPS Ubuntu 20.04
 
-## 🛠️ Tecnologias
-
-- Node.js
-- Express
-- MySQL
-- React.js
-- Material-UI
-- whatsapp-web.js
-
-## 📋 Pré-requisitos
-
-- Node.js 14+
-- MySQL 5.7+ ou MariaDB 10.4+
-- NPM ou Yarn
-
-## 🔧 Instalação
-
-1. Clone o repositório:
+### 1. Atualizando o Sistema
 ```bash
-git clone https://seu-repositorio/botwa.git
+# Atualizar lista de pacotes
+sudo apt update
+
+# Atualizar pacotes do sistema
+sudo apt upgrade -y
+
+# Instalar dependências essenciais
+sudo apt install -y curl git build-essential
+```
+
+### 2. Instalando Node.js 18.x
+```bash
+# Adicionar repositório do Node.js 18.x
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+
+# Instalar Node.js
+sudo apt install -y nodejs
+
+# Verificar instalação
+node --version
+npm --version
+```
+
+### 3. Instalando SQLite3
+```bash
+sudo apt install -y sqlite3
+```
+
+### 4. Instalando Chrome/Chromium e Dependências
+```bash
+# Instalar Chromium e dependências necessárias
+sudo apt install -y chromium-browser \
+    ca-certificates \
+    fonts-liberation \
+    libappindicator3-1 \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libatk1.0-0 \
+    libc6 \
+    libcairo2 \
+    libcups2 \
+    libdbus-1-3 \
+    libexpat1 \
+    libfontconfig1 \
+    libgbm1 \
+    libgcc1 \
+    libglib2.0-0 \
+    libgtk-3-0 \
+    libnspr4 \
+    libnss3 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libstdc++6 \
+    libx11-6 \
+    libx11-xcb1 \
+    libxcb1 \
+    libxcomposite1 \
+    libxcursor1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxi6 \
+    libxrandr2 \
+    libxrender1 \
+    libxss1 \
+    libxtst6 \
+    lsb-release \
+    wget \
+    xdg-utils
+```
+
+### 5. Clonando e Configurando o Projeto
+```bash
+# Criar diretório para o projeto
+mkdir -p /var/www
+cd /var/www
+
+# Clonar o repositório
+git clone https://github.com/seu-usuario/botwa.git
 cd botwa
-```
 
-2. Instale as dependências:
-```bash
+# Instalar dependências
 npm install
+
+# Dar permissões necessárias
+sudo chown -R $USER:$USER /var/www/botwa
+sudo chmod -R 755 /var/www/botwa
 ```
 
-3. Configure as variáveis de ambiente:
+### 6. Configurando o Ambiente
 ```bash
-cp .env.example .env
-# Edite o arquivo .env com suas configurações
+# Criar arquivo .env
+nano .env
 ```
 
-4. Crie o banco de dados:
-```bash
-mysql -u root -p
-CREATE DATABASE botwa;
-USE botwa;
-source src/database/init.sql;
-```
-
-5. Inicie o servidor:
-```bash
-npm run dev
-```
-
-## 🚀 Uso
-
-### Bot WhatsApp
-
-1. Inicie o servidor
-2. Escaneie o QR Code que aparecerá no terminal
-3. Envie "menu" para o número do bot para ver os comandos disponíveis
-
-### Painel Administrativo
-
-1. Acesse `http://localhost:3000`
-2. Faça login com suas credenciais de administrador
-3. Gerencie clientes, viagens e abastecimentos
-
-## 📦 Estrutura do Projeto
-
-```
-botwa/
-├── src/
-│   ├── config/         # Configurações
-│   ├── controllers/    # Controladores
-│   ├── database/       # Migrations e seeds
-│   ├── models/        # Modelos
-│   ├── routes/        # Rotas da API
-│   └── services/      # Serviços (Bot WhatsApp)
-├── .env               # Variáveis de ambiente
-└── package.json
-```
-
-## 🔐 Variáveis de Ambiente
-
+Conteúdo do `.env`:
 ```env
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=sua_senha
-DB_NAME=botwa
-JWT_SECRET=seu_jwt_secret
-PORT=3000
+NODE_ENV=production
+PORT=3001
+JWT_SECRET=sua_chave_secreta_aqui
 ```
 
-## 📝 Endpoints da API
+### 7. Configurando PM2 (Gerenciador de Processos)
+```bash
+# Instalar PM2 globalmente
+sudo npm install -g pm2
 
-### Clientes
-- `GET /api/clientes` - Lista todos os clientes
-- `GET /api/clientes/:id` - Obtém um cliente específico
-- `POST /api/clientes` - Cria um novo cliente
-- `PUT /api/clientes/:id` - Atualiza um cliente
-- `DELETE /api/clientes/:id` - Remove um cliente
+# Iniciar aplicação com PM2
+pm2 start src/index.js --name botwa
 
-### Viagens
-- `GET /api/viagens` - Lista todas as viagens
-- `POST /api/viagens` - Registra uma nova viagem
-- `GET /api/viagens/estatisticas/geral` - Obtém estatísticas gerais
+# Configurar para iniciar com o sistema
+pm2 startup
+pm2 save
+```
 
-### Abastecimentos
-- `GET /api/abastecimentos` - Lista todos os abastecimentos
-- `POST /api/abastecimentos` - Registra um novo abastecimento
-- `GET /api/abastecimentos/estatisticas/geral` - Obtém estatísticas gerais
+### 8. Configurando Nginx como Proxy Reverso
+```bash
+# Instalar Nginx
+sudo apt install -y nginx
 
-## 👥 Contribuição
+# Criar configuração do site
+sudo nano /etc/nginx/sites-available/botwa
+```
 
-1. Faça o fork do projeto
-2. Crie sua feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
+Conteúdo da configuração:
+```nginx
+server {
+    listen 80;
+    server_name seu-dominio.com;
+
+    location / {
+        proxy_pass http://localhost:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+```bash
+# Criar link simbólico
+sudo ln -s /etc/nginx/sites-available/botwa /etc/nginx/sites-enabled/
+
+# Testar configuração do Nginx
+sudo nginx -t
+
+# Reiniciar Nginx
+sudo systemctl restart nginx
+```
+
+### 9. Configurando Firewall (UFW)
+```bash
+# Instalar UFW se não estiver instalado
+sudo apt install -y ufw
+
+# Configurar regras básicas
+sudo ufw allow ssh
+sudo ufw allow http
+sudo ufw allow https
+
+# Ativar firewall
+sudo ufw enable
+```
+
+### 10. Configurando SSL com Certbot (Opcional)
+```bash
+# Instalar Certbot
+sudo apt install -y certbot python3-certbot-nginx
+
+# Obter certificado SSL
+sudo certbot --nginx -d seu-dominio.com
+
+# Configurar renovação automática
+sudo certbot renew --dry-run
+```
+
+### 11. Criando Usuário Administrador
+```bash
+# Fazer requisição para criar usuário admin
+curl -X POST -H "Content-Type: application/json" \
+     -d '{"nome":"Admin","email":"admin@exemplo.com","password":"sua_senha"}' \
+     http://localhost:3001/api/auth/criar-admin
+```
+
+## 📱 Comandos do WhatsApp
+
+Após iniciar o bot, você verá um QR Code no terminal. Escaneie-o com seu WhatsApp para conectar o bot.
+
+### Comandos Disponíveis:
+
+1. **!ajuda**
+   - Mostra todos os comandos disponíveis
+   - Uso: `!ajuda`
+
+2. **!viagem**
+   - Registra uma nova viagem
+   - Uso: `!viagem [distância] [valor] [observação]`
+   - Exemplo: `!viagem 100 50 Viagem para São Paulo`
+
+3. **!abastecimento**
+   - Registra um novo abastecimento
+   - Uso: `!abastecimento [litros] [valor] [posto]`
+   - Exemplo: `!abastecimento 40 200 Posto Shell`
+
+4. **!relatorio**
+   - Mostra as últimas 5 viagens
+   - Uso: `!relatorio`
+
+## 🔧 Manutenção
+
+### Comandos Úteis do PM2
+```bash
+# Ver logs
+pm2 logs botwa
+
+# Reiniciar aplicação
+pm2 restart botwa
+
+# Parar aplicação
+pm2 stop botwa
+
+# Ver status
+pm2 status
+```
+
+### Backup do Banco de Dados
+```bash
+# Criar backup
+cp /var/www/botwa/src/database/database.sqlite /backup/database.sqlite.$(date +%Y%m%d)
+
+# Restaurar backup
+cp /backup/database.sqlite.[data] /var/www/botwa/src/database/database.sqlite
+```
+
+## 🔒 Segurança
+
+1. Mantenha o sistema atualizado:
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+2. Monitore os logs:
+```bash
+# Logs do PM2
+pm2 logs botwa
+
+# Logs do Nginx
+sudo tail -f /var/log/nginx/access.log
+sudo tail -f /var/log/nginx/error.log
+```
+
+3. Configure backup automático:
+```bash
+# Criar script de backup
+sudo nano /etc/cron.daily/backup-botwa
+
+# Adicionar ao script
+#!/bin/bash
+cp /var/www/botwa/src/database/database.sqlite /backup/database.sqlite.$(date +%Y%m%d)
+find /backup -name "database.sqlite.*" -mtime +7 -delete
+```
+
+```bash
+# Dar permissão de execução
+sudo chmod +x /etc/cron.daily/backup-botwa
+```
+
+## ❗ Solução de Problemas Comuns
+
+1. **Erro: WhatsApp não conecta**
+```bash
+# Limpar cache do WhatsApp
+cd /var/www/botwa
+rm -rf .wwebjs_auth
+rm -rf .wwebjs_cache
+pm2 restart botwa
+```
+
+2. **Erro: Permissões**
+```bash
+# Corrigir permissões
+sudo chown -R $USER:$USER /var/www/botwa
+sudo chmod -R 755 /var/www/botwa
+```
+
+3. **Erro: Porta em uso**
+```bash
+# Verificar processo usando a porta
+sudo lsof -i :3001
+# Matar processo
+sudo kill -9 [PID]
+```
+
+4. **Erro: Memória insuficiente**
+```bash
+# Adicionar swap
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+```
+
+## 📞 Suporte
+
+Para suporte, abra uma issue no GitHub ou entre em contato através do e-mail de suporte.
 
 ## 📄 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
-## 📞 Suporte
-
-Em caso de dúvidas ou problemas, abra uma issue no repositório ou entre em contato com a equipe de suporte. 

@@ -1,14 +1,54 @@
 # Dependências
 node_modules/
-.pnp
-.pnp.js
+npm-debug.log
+yarn-debug.log
+yarn-error.log
 
 # Ambiente
 .env
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*.local
+
+# Banco de dados
+src/database/database.sqlite
+*.sqlite-journal
+
+# Cache e arquivos temporários
+.wwebjs_auth/
+.wwebjs_cache/
+.temp/
+.cache/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDEs e editores
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Arquivos de backup
+*.bak
+*.backup
+*.old
+
+# .pnp
+.pnp
+.pnp.js
 
 # Logs
 npm-debug.log*
@@ -27,18 +67,6 @@ logs
 # Build
 /build
 /dist
-
-# Cache
-.cache/
-.npm
-
-# WhatsApp session
-.wwebjs_auth/
-.wwebjs_cache/
-
-# Banco de dados
-*.sqlite
-*.db
 
 # Outros
 coverage/
